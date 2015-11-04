@@ -1,12 +1,5 @@
-var React = require('react');
-var Authenticated = require('../../utils/authenticated');
-var Router = require('react-router');
+import React from 'react'
 
-var Dashboard = React.createClass({
-  mixins: [Authenticated],
-  render: function(){
-    return <p> DASHBOARD </p>
-  }
-});
+let Dashboard = (props) => <p> DASHBOARD </p>;
 
-module.exports = Dashboard;
+export default Dashboard;

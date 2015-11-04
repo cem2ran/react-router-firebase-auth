@@ -1,31 +1,34 @@
-var React = require('react');
-var Router = require('react-router');
-var firebaseUtils = require('../../utils/firebaseUtils');
-var Login = React.createClass({
-  mixins: [Router.Navigation],
-  statics: {
-    attemptedTransition: null
-  },
-  getInitialState: function(){
-    return {
+import React from 'react'
+import firebaseUtils from '../../utils/firebaseUtils'
+
+module.exports = class Login extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {
       error: false
     }
-  },
-  handleSubmit: function(e){
+  }
+
+  handleSubmit = (e) => {
     e.preventDefault();
-    var email = this.refs.email.getDOMNode().value;
-    var pw = this.refs.pw.getDOMNode().value;
-    firebaseUtils.loginWithPW({email: email, password: pw}, function(){
-      if(Login.attemptedTransition){
-        var transition = Login.attemptedTransition;
-        Login.attemptedTransition = null;
-        transition.retry();
+    var email = this.refs.email.value;
+    var pw = this.refs.pw.value;
+
+    firebaseUtils.loginWithPW({email: email, password: pw}, null, (loggedIn) =>{
+      if (!loggedIn)
+        return this.setState({ error: true })
+
+      var { location } = this.props
+
+      if (location.state && location.state.nextPathname) {
+        this.props.history.replaceState(null, location.state.nextPathname)
       } else {
-        this.replaceWith('dashboard');
+        this.props.history.replaceState(null, '/dashboard')
       }
-    }.bind(this));
-  },
-  render: function(){
+    });
+  }
+
+  render(){
     var errors = this.state.error ? <p> Error on Login </p> : '';
     return (
       <div className="col-sm-6 col-sm-offset-3">
@@ -44,6 +47,4 @@ var Login = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = Login;
+}

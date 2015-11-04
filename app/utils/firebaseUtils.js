@@ -1,16 +1,14 @@
-var Firebase = require('firebase');
-var forge = ""; //YOUR FIREBASE URL HERE
-var ref = new Firebase(forge);
-var cachedUser = null;
+import Firebase from 'firebase'
+let forge = ""; //YOUR FIREBASE URL HERE
+let ref = new Firebase(forge);
+let cachedUser = null;
 
-var addNewUserToFB = function(newUser){
-  var key = newUser.uid;
-  ref.child('user').child(key).set(newUser);
-};
+let addNewUserToFB = (newUser, {uid} = newUser) =>
+  ref.child('user').child(uid).set(newUser);
 
-var firebaseUtils = {
-  createUser: function(user, cb) {
-    ref.createUser(user, function(err) {
+export default {
+  createUser(user, cb) {
+    ref.createUser(user, (err) => {
       if (err) {
         switch (err.code) {
           case "EMAIL_TAKEN":
@@ -31,30 +29,28 @@ var firebaseUtils = {
             });
           }, cb);
       }
-    }.bind(this));
+    });
   },
-  loginWithPW: function(userObj, cb, cbOnRegister){
-    ref.authWithPassword(userObj, function(err, authData){
+  loginWithPW(userObj, cb, cbOnRegister){
+    ref.authWithPassword(userObj, (err, authData) => {
       if(err){
         console.log('Error on login:', err.message);
         cbOnRegister && cbOnRegister(false);
       } else {
         authData.email = userObj.email;
         cachedUser = authData;
-        cb(authData);
+        cb && cb(authData);
         this.onChange(true);
         cbOnRegister && cbOnRegister(true);
       }
-    }.bind(this));
+    });
   },
-  isLoggedIn: function(){
+  isLoggedIn(){
     return cachedUser && true || ref.getAuth() || false;
   },
-  logout: function(){
+  logout(){
     ref.unauth();
     cachedUser = null;
     this.onChange(false);
   }
 };
-
-module.exports = firebaseUtils;

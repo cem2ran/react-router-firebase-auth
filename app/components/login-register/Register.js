@@ -1,20 +1,20 @@
-var React = require('react');
-var firebaseUtils = require('../../utils/firebaseUtils');
-var Router = require('react-router');
+import React from 'react'
+import firebaseUtils from '../../utils/firebaseUtils'
 
-var Register = React.createClass({
-  mixins: [ Router.Navigation ],
-  handleSubmit: function(e){
+module.exports = class Register extends React.Component{
+
+  handleSubmit = (e) => {
     e.preventDefault();
-    var email = this.refs.email.getDOMNode().value;
-    var pw = this.refs.pw.getDOMNode().value;
-    firebaseUtils.createUser({email: email, password: pw}, function(result){
+    var email = this.refs.email.value;
+    var pw = this.refs.pw.value;
+    firebaseUtils.createUser({email: email, password: pw}, (result) =>{
       if(result){
-        this.replaceWith('dashboard');
+        this.props.history.replaceState(null, '/dashboard')
       }
-    }.bind(this));
-  },
-  render: function(){
+    });
+  }
+
+  render(){
     return (
       <div className="col-sm-6 col-sm-offset-3">
         <form onSubmit={this.handleSubmit}>
@@ -26,11 +26,9 @@ var Register = React.createClass({
             <label>Password</label>
             <input ref="pw" type="password" className="form-control" placeholder="Password" />
           </div>
-          <button type="submit" className="btn btn-primary">Login</button>
+          <button type="submit" className="btn btn-primary">Register</button>
         </form>
       </div>
     )
   }
-});
-
-module.exports = Register;
+}

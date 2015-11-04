@@ -1,14 +1,14 @@
-var React = require('react');
-var firebaseUtils = require('../../utils/firebaseUtils');
+import React from 'react'
+import firebaseUtils from '../../utils/firebaseUtils'
 
-var Logout = React.createClass({
-  componentDidMount: function () {
+class Logout extends React.Component{
+  constructor(props){
+    super(props);
     firebaseUtils.logout();
-  },
-
-  render: function () {
+  }
+  render() {
     return <p>You are now logged out</p>;
   }
-});
+}
 
-module.exports = Logout;
+export default Logout;

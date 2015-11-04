@@ -1,21 +1,20 @@
-var React = require('react');
-var Router = require('react-router');
-var Route = Router.Route;
-var Main = require('../components/Main');
-var Register = require('../components/login-register/Register');
-var Login = require("../components/login-register/Login");
-var Logout = require('../components/login-register/Logout');
-var Dashboard = require('../components/secure/Dashboard');
-var Home = require("../components/Home");
+import React from 'react'
+import {Route, IndexRoute} from 'react-router'
+import Main from '../components/Main'
+import Register from '../components/login-register/Register'
+import Login from "../components/login-register/Login"
+import Logout from '../components/login-register/Logout'
+import Dashboard from '../components/secure/Dashboard'
+import Home from "../components/Home"
 
-var routes = (
-  <Route handler={Main} >
-    <Route name="login" handler={Login} />
-    <Route name="logout" handler={Logout} />
-    <Route name="register" handler={Register} />
-    <Route name="dashboard" handler={Dashboard} />
-    <Route name="home" path="/" handler={Home} />
-  </Route>
-);
+import requireAuth from '../utils/authenticated'
 
-module.exports = routes;
+export default
+<Route path="/" component={Main}>
+  <IndexRoute component={Home}/>
+  <Route path="login" component={Login} />
+  <Route path="logout" component={Logout} />
+  <Route path="register" component={Register} />
+  <Route path="dashboard" component={Dashboard} onEnter={requireAuth}/>
+  <Route path="*" component={Home} />
+</Route>
